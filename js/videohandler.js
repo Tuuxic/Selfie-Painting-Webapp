@@ -15,6 +15,9 @@ function onLoad() {
             video.srcObject = stream;
             video.play();
         });
+    } else {
+        alert("You need to have a enabled camera to use this app")
+        return;
     }
 
      // Trigger photo take
@@ -30,7 +33,10 @@ function onLoad() {
 
         const dataURL = canvas.toDataURL("image/png");
         localStorage.setItem("imgData", dataURL);
+        // Set playSound to play a snap sound after redirection to editor.html
+        localStorage.setItem("playSound", "")
         window.location.href = "/html/editor.html";
+        
     });
     
 };

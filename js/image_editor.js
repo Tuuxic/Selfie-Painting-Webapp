@@ -1,12 +1,28 @@
 window.onload = init;
-const audio = new Audio("/assets/snap.mp3");
-audio.play()
+window.onresize = resizeCanvas;
 
 function init() {
+    
+    playSnapSound();
+    var takenPicture = localStorage.getItem("imgData");
+    drawImageOnCanvas(takenPicture);
+    drawOnCanvas();
+}
+
+function playSnapSound() {
+    // Only play sound when sound when "playSound" is set
+    if (localStorage.getItem("playSound") != null) {
+        const audio = new Audio("/assets/snap.mp3");
+        audio.play()
+        localStorage.removeItem("playSound")
+    }
+
+}
+
+function drawImageOnCanvas(imgURL) {
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
 
-    var imgURL = localStorage.getItem("imgData");
     var img = new Image;
     img.src = imgURL;
 
@@ -21,11 +37,63 @@ function init() {
         canvas.width = img.naturalWidth * ratio;
         canvas.height = img.naturalHeight * ratio;
 
-        //canvas.height = window.innerHeight;
-        //canvas.width = window.innerWidth;
-
         ctx.drawImage(img, 0, 0, img.naturalWidth * ratio, img.naturalHeight * ratio);
     };
+}
+
+function drawOnCanvas() {
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    var slider = document.getElementById("size-slider");
+    var colorpicker = document.getElementById("colorpicker");
+
+    var size = slider.value;
+    var color = colorpicker.value;
+    var isDrawing = false;
+
+    colorpicker.addEventListener("change", (e) => {
+        if (e.target.value != null) {
+            color = e.target.value;
+        }
+    });
+
+    slider.addEventListener("change", (e) => {
+        if (e.target.value != null) {
+            size = e.target.value;
+        }
+    })
+
+    const borderSize = 1;
+
+    canvas.onmousedown = (e) => {
+        isDrawing = true;
+        ctx.beginPath();
+        ctx.lineWidth = size;
+        ctx.strokeStyle = color;
+        ctx.lineJoin = "round";
+        ctx.lineCap = "round";
+        // You cave to subtract the size of the border (in our case 1) to correctly draw on the canvas
+        ctx.moveTo(e.clientX - canvas.offsetLeft - borderSize, e.clientY - canvas.offsetTop - borderSize);
+
+    }
+
+
+    canvas.onmousemove = (e) => {
+        if (isDrawing) {
+            ctx.lineWidth = size;
+            ctx.strokeStyle = color;
+            // You cave to subtract the size of the border (in our case 1) to correctly draw on the canvas
+            ctx.lineTo(e.clientX - canvas.offsetLeft - borderSize, e.clientY - canvas.offsetTop - borderSize);
+            ctx.stroke();
+        }
+    };
+
+    canvas.onmouseup = () => {
+        isDrawing = false;
+        ctx.closePath();
+    };
+
+
 }
 
 function openNav() {
@@ -36,100 +104,20 @@ function closeNav() {
     document.getElementById("rightSidenav").style.width = "0";
 }
 
-
-
-/*
-var flag = false,
-    prevX = 0,
-    currX = 0,
-    prevY = 0,
-    currY = 0,
-    dot_flag = false,
-    color = "#000000",
-    video_width = 0,
-    video_height = 0;
-
-
-document.addEventListener("input", function (e) {
-    color = e.target.value;
-}, false);
-
-document.addEventListener("change", function (e) {
-
-}, false);
-/*
-canvas.addEventListener("click", function(e) {
-    var canvLeft = canvas.offsetLeft + canvas.clientLeft;
-    var canvTop = canvas.offsetTop + canvas.clientTop;
-    var x = e.pageX - canvLeft;
-    var y = e.pageY - canvTop;
-    context.fillRect(x, y, 10, 10);
-
-}, false);
-
-
-canvas.addEventListener("mousemove", function (e) {
-    if (flag) {
-        prevX = currX;
-        prevY = currY;
-        currX = e.clientX - canvas.offsetLeft;
-        currY = e.clientY - canvas.offsetTop;
-        draw(context);
-    }
-
-}, false);
-
-
-canvas.addEventListener("mousedown", function (e) {
-    prevX = currX;
-    prevY = currY;
-    currX = e.clientX - canvas.offsetLeft;
-    currY = e.clientY - canvas.offsetTop;
-
-    flag = true;
-    dot_flag = true;
-    if (dot_flag) {
-        context.beginPath();
-        context.fillStyle = "black";
-        context.fillRect(currX, currY, 2, 2);
-        context.closePath();
-        dot_flag = false;
-    }
-}, false);
-
-
-canvas.addEventListener("mouseup", function (e) {
-    flag = false;
-}, false);
-
-
-canvas.addEventListener("mouseout", function (e) {
-    flag = false;
-}, false);
-
-
-function erase() {
-    var m = confirm("Want to clear");
-    if (m) {
-        ctx.clearRect(0, 0, w, h);
-        document.getElementById("canvasimg").style.display = "none";
-    }
+function saveImage() {
+    var canvas = document.getElementById("canvas");
+    var image = canvas.toDataURL("image/png");
+    const downloader = document.createElement('a');
+    downloader.href = image;
+    downloader.download = "EditedPicture";
+    downloader.click();
+    downloader.remove();
 }
 
-function save() {
-    document.getElementById("canvasimg").style.border = "2px solid";
-    var dataURL = canvas.toDataURL();
-    document.getElementById("canvasimg").src = dataURL;
-    document.getElementById("canvasimg").style.display = "inline";
+function clearCanvas() {
+    drawImageOnCanvas(localStorage.getItem("imgData"));
 }
 
-function draw(context) {
-    context.beginPath();
-    context.moveTo(prevX, prevY);
-    context.lineTo(currX, currY);
-    context.strokeStyle = color;
-    context.lineWidth = 5;
-    context.stroke();
-    context.closePath();
+function resizeCanvas() {
+    drawImageOnCanvas(canvas.toDataURL("image/png"));
 }
-*/
