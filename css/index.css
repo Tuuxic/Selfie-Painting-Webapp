@@ -1,13 +1,12 @@
-
 .content-wrapper {
-    margin-top: 1%;
-    margin-bottom: 1%;
+    display: flex;
+    justify-content: center;
 }
 
 .options-container {
-    margin-top: 10px;
-    display: flex;
+    position: fixed;
     justify-content: center;
+    bottom: 10%;
 }
 
 #webcam {
@@ -15,7 +14,7 @@
     z-index: -1;
     top: 0;
     left: 0;
-    width: 100%; 
+    width: 100%;
     height: 100%;
     object-fit: cover;
 }
@@ -29,20 +28,13 @@
     outline: none;
 }
 
-
-.canvas-container {
-    display: flex;
-    justify-content:  center;
+.photo-button-icon {
+    width: 125px;
+    height: 125px;
+    position: relative;
 }
 
-
-  .photo-button-icon {
-    width: 100px;
-    height: 100px;
- 
-    position: relative;
-  }
-  .circle {
+.circle {
     position: absolute;
     top: 12%;
     left: 12%;
@@ -51,27 +43,33 @@
     border-radius: 100%;
     background-color: #ffffff;
     opacity: 0;
-  }
-  .ring {
+}
+
+.ring {
     position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
     right: 0;
-    
+
     border-radius: 100%;
     border: 0.5em solid #ffffff;
     opacity: 0.8;
-  }
-  .photo-button-icon .circle, .photo-button-icon .ring {
+}
+
+.photo-button-icon .circle,
+.photo-button-icon .ring {
     transition: all 0.25s;
-  }
-  .photo-button-icon:hover .circle {
+}
+
+.photo-button-icon:hover .circle {
     opacity: 1;
-  }
-  .photo-button-icon:active .ring {
+}
+
+.photo-button-icon:active .ring {
     opacity: 1;
-  }
-  .photo-button-icon:active .circle {
+}
+
+.photo-button-icon:active .circle {
     opacity: 0.5;
-  }
+}
