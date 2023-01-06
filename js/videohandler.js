@@ -1,17 +1,22 @@
-window.onload = onLoad
+window.onload = init
 
 const BLANK_IMAGE = new Image;
 BLANK_IMAGE.src = "/assets/blank.jpg";
 
 var video_enabled = false;
 
-function onLoad() {
+function init() {
     const video = document.getElementById("webcam");
 
+    initBackgroundVideo(video);
+    initPhotoButton(video);
+    initCameraTurnOnSwipe(video);
+}
+
+function initBackgroundVideo(video) {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({
-            video: true
-        }).then(function (stream) {
+
+        navigator.mediaDevices.getUserMedia( { video: true } ).then(function (stream) {
 
             // Horizontally flip video
             video.style.cssText = "-moz-transform: scale(-1, 1); \
@@ -21,11 +26,14 @@ function onLoad() {
             video.srcObject = stream;
             video.play();
             video_enabled = true;
+            
         }).catch(() => {
             video_enabled = false;
         });
     }
+}
 
+function initPhotoButton(video) {
     // Trigger photo take
     document.getElementById("photo-button").addEventListener("click", function () {
         const canvas = document.createElement('canvas');
@@ -55,6 +63,11 @@ function onLoad() {
 
     });
 
+}
+
+function initCameraTurnOnSwipe(video) {
+
+    // Change camera view on mobile
     document.addEventListener('touchstart', handleTouchStart, false);
     document.addEventListener('touchmove', handleTouchMove, false);
 
@@ -80,6 +93,7 @@ function onLoad() {
         var xDiff = xDown - xUp;
         var yDiff = yDown - yUp;
 
+        // Check if User swiped right or left
         if (Math.abs(xDiff) > Math.abs(yDiff)) {
             if (Math.abs(xDiff) <= THRESHOLD) {
                 return;
@@ -99,12 +113,12 @@ function onLoad() {
                 }
             }
 
+            // Turn the camera
             const success = turnVideo(constraints, video)
 
             if (success) {
                 currFacingMode = newFacingMode;
             }
-
 
             xDown = null;
             yDown = null;

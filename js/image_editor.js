@@ -81,7 +81,7 @@ function drawOnCanvas() {
 
     
     const drawStart = (e) => {
-        var topScroll = document.documentElement.scrollTop
+        const topScroll = document.documentElement.scrollTop
         isDrawing = true;
         ctx.beginPath();
         ctx.lineWidth = size;
@@ -89,22 +89,24 @@ function drawOnCanvas() {
         ctx.lineJoin = "round";
         ctx.lineCap = "round";
 
-        newXPos = e.clientX - canvas.offsetLeft - borderSize;
-        newYPos = e.clientY - canvas.offsetTop - borderSize + topScroll
         // You cave to subtract the size of the border (in our case 1) and scrollposition to correctly draw on the canvas
+        newXPos = e.clientX - canvas.offsetLeft - borderSize;
+        newYPos = e.clientY - canvas.offsetTop - borderSize + topScroll;
+        
         ctx.moveTo(newXPos, newYPos);
 
     }
 
     const drawMove = (e) => {
-        var topScroll = document.documentElement.scrollTop
+        const topScroll = document.documentElement.scrollTop
         if (isDrawing) {
             ctx.lineWidth = size;
             ctx.strokeStyle = color;
 
-            newXPos = e.clientX - canvas.offsetLeft - borderSize;
-            newYPos = e.clientY - canvas.offsetTop - borderSize + topScroll
             // You cave to subtract the size of the border (in our case 1)  and scrollposition to correctly draw on the canvas
+            newXPos = e.clientX - canvas.offsetLeft - borderSize;
+            newYPos = e.clientY - canvas.offsetTop - borderSize + topScroll;
+            
             ctx.lineTo(newXPos, newYPos);
             ctx.stroke();
         }
@@ -116,8 +118,6 @@ function drawOnCanvas() {
     };
 
     // Mouse and Touch Event Handling:
-
-    
 
     canvas.onmousedown = drawStart;
     canvas.addEventListener("touchstart", (e) => {

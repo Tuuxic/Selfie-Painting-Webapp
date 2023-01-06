@@ -28,6 +28,10 @@
     outline: none;
 }
 
+button {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
 .photo-button-icon {
     width: 100px;
     height: 100px;
