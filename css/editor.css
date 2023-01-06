@@ -21,12 +21,23 @@
     align-items: center;
 }
 
+.selector-wrapper {
+    display: flex;
+}
+
+.option-wrapper {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
 .option-descriptor {
     color: #426DFB;
     font-family: neon;
     font-size: 4vh;
     margin-right: 1vw;
     margin-left: 1vw;
+    text-shadow: 0 0 3vw #2356FF;
     animation: flux 2s linear infinite;
     -moz-animation: flux 2s linear infinite;
     -webkit-animation: flux 2s linear infinite;
@@ -36,12 +47,20 @@
 #canvas {
     border: 1px solid white;
     border-radius: 10px;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 }
 
 
 body {
     background-color: #202020;
+}
+
+input,
+textarea,
+button,
+select,
+a {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
 @keyframes flux {
@@ -82,6 +101,7 @@ body {
     font-family: neon;
     color: #28D7FE;
     cursor: pointer;
+    text-shadow: 0 0 3vw #2356FF;
     text-decoration: none;
     animation: flux 2s linear infinite;
     -moz-animation: flux 2s linear infinite;
@@ -103,6 +123,7 @@ body {
     cursor: pointer;
     color: #426DFB;
     text-decoration: none;
+    text-shadow: 0 0 3vw #2356FF;
     background: transparent;
     border: none;
     animation: flux 2s linear infinite;
@@ -193,7 +214,7 @@ body {
 @media screen and (max-width: 450px) {
     .flux {
 
-        font-size: 2vh;
+        font-size: 3vh;
         line-height: 1vw;
     }
 
@@ -201,6 +222,19 @@ body {
         font-size: 4vh;
         margin-bottom: 1vh;
         margin-top: 1vh;
+        position: relative;
+        left: 0;
+    }
+
+    .selector-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        justify-content: center;
+    }
+
+    .option-wrapper {
+        justify-content: space-between;
     }
 
     .option-buttons {
@@ -210,24 +244,26 @@ body {
     }
 
     #colorpicker {
-        width: 30vw;
+        width: 42vw;
+        position: relative;
+        right: 0;
     }
 
     .back-button {
-        font-size: 3vh;
+        font-size: 4vh;
     }
 
     .options-container {
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
 
     }
 
     .range {
-        width: 60vw;
+        width: 40vw;
         margin-bottom: 2vh;
+        position: relative;
+        right: 0;
     }
 }
 
@@ -239,20 +275,26 @@ body {
     }
 
     .option-descriptor {
-        font-size: 2vh;
+        font-size: 10vw;
         margin-right: 0.5vw;
         margin-left: 0.5vw;
     }
 
     .option-buttons {
-        font-size: 2vh;
+        font-size: 10vw;
     }
 
-    #colorpicker {
-        width: 10vw;
-    }
 
     .back-button {
         font-size: 3vh;
+    }
+}
+
+
+@media screen and (max-width: 590px) and (min-height: 725px) {
+    .flux {
+
+        font-size: 5vw;
+        line-height: 1vw;
     }
 }

@@ -23,16 +23,26 @@
             <canvas id="canvas"></canvas>
         </div>
         <div class="options-container">
-            <div class="option-descriptor">Color:</div>
-            <input id="colorpicker" type="color" value="#000000">
-
-            <div class="option-descriptor">Size:</div>
-            <div class="slidecontainer">
-                <input type="range" min="1" max="30" value="10" class="range" id="size-slider">
+            <div class="selector-wrapper">
+            <div class="option-wrapper">
+                <div class="option-descriptor">Color:</div>
+                <input id="colorpicker" type="color" value="#000000">
             </div>
+            <div class="option-wrapper">
+                <div class="option-descriptor">Size:</div>
+                <div class="slidecontainer">
+                    <input type="range" min="1" max="30" value="10" class="range" id="size-slider">
+                </div>
+            </div>
+            <div class="option-wrapper">
+                <button class="option-buttons" onclick="saveImage()">Save</button>
+                <button class="option-buttons" onclick="clearCanvas()">Clear</button>
+            </div>
+        </div>
 
-            <button class="option-buttons" onclick="saveImage()">Save</button>
-            <button class="option-buttons" onclick="clearCanvas()">Clear</button>
+        
+
+            
         </div>
     </div>
 
