@@ -1,20 +1,26 @@
 window.onload = init;
 window.onresize = resizeCanvas;
 
+
+const CANVAS_IMAGE_TOKEN = "imgData";
+const PLAY_AUDIO_FLAG = "playSound";
+const SNAP_SOUND_PATH = "/assets/snap.mp3";
+
 function init() {
     
     playSnapSound();
-    var takenPicture = localStorage.getItem("imgData");
+    var takenPicture = localStorage.getItem(CANVAS_IMAGE_TOKEN);
     drawImageOnCanvas(takenPicture);
     drawOnCanvas();
+
 }
 
 function playSnapSound() {
     // Only play sound when sound when "playSound" is set
-    if (localStorage.getItem("playSound") != null) {
-        const audio = new Audio("/assets/snap.mp3");
+    if (localStorage.getItem(PLAY_AUDIO_FLAG) != null) {
+        const audio = new Audio(SNAP_SOUND_PATH);
         audio.play()
-        localStorage.removeItem("playSound")
+        localStorage.removeItem(PLAY_AUDIO_FLAG)
     }
 
 }
@@ -28,8 +34,10 @@ function drawImageOnCanvas(imgURL) {
 
     // Set image as canvas background to edit
     img.onload = function () {
-        canvas.height = window.innerHeight - 0.25 * window.innerHeight;
-        canvas.width = window.innerWidth;
+        const heightScale = 0.25;
+        const widthScale = 0.1;
+        canvas.height = window.innerHeight - heightScale * window.innerHeight;
+        canvas.width = window.innerWidth - widthScale * window.innerWidth;
 
         var hRatio = canvas.width / img.naturalWidth;
         var vRatio = canvas.height / img.naturalHeight;
@@ -44,12 +52,16 @@ function drawImageOnCanvas(imgURL) {
 function drawOnCanvas() {
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
+
     var slider = document.getElementById("size-slider");
     var colorpicker = document.getElementById("colorpicker");
 
     var size = slider.value;
     var color = colorpicker.value;
     var isDrawing = false;
+
+
+    // Setup of pencil tools:
 
     colorpicker.addEventListener("change", (e) => {
         if (e.target.value != null) {
@@ -63,50 +75,84 @@ function drawOnCanvas() {
         }
     })
 
+
+    // Bordersize of canvas element
     const borderSize = 1;
 
-    canvas.onmousedown = (e) => {
+    
+    const drawStart = (e) => {
+        var topScroll = document.documentElement.scrollTop
         isDrawing = true;
         ctx.beginPath();
         ctx.lineWidth = size;
         ctx.strokeStyle = color;
         ctx.lineJoin = "round";
         ctx.lineCap = "round";
-        // You cave to subtract the size of the border (in our case 1) to correctly draw on the canvas
-        ctx.moveTo(e.clientX - canvas.offsetLeft - borderSize, e.clientY - canvas.offsetTop - borderSize);
+
+        newXPos = e.clientX - canvas.offsetLeft - borderSize;
+        newYPos = e.clientY - canvas.offsetTop - borderSize + topScroll
+        // You cave to subtract the size of the border (in our case 1) and scrollposition to correctly draw on the canvas
+        ctx.moveTo(newXPos, newYPos);
 
     }
 
-
-    canvas.onmousemove = (e) => {
+    const drawMove = (e) => {
+        var topScroll = document.documentElement.scrollTop
         if (isDrawing) {
             ctx.lineWidth = size;
             ctx.strokeStyle = color;
-            // You cave to subtract the size of the border (in our case 1) to correctly draw on the canvas
-            ctx.lineTo(e.clientX - canvas.offsetLeft - borderSize, e.clientY - canvas.offsetTop - borderSize);
+
+            newXPos = e.clientX - canvas.offsetLeft - borderSize;
+            newYPos = e.clientY - canvas.offsetTop - borderSize + topScroll
+            // You cave to subtract the size of the border (in our case 1)  and scrollposition to correctly draw on the canvas
+            ctx.lineTo(newXPos, newYPos);
             ctx.stroke();
         }
     };
 
-    canvas.onmouseup = () => {
+    const drawEnd = () => {
         isDrawing = false;
         ctx.closePath();
     };
 
+    // Mouse and Touch Event Handling:
 
-}
+    
 
-function openNav() {
-    document.getElementById("rightSidenav").style.width = "250px";
-}
+    canvas.onmousedown = drawStart;
+    canvas.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        if (e.touches.size > 1) {
+            drawEnd();
+            return;
+        }
+        drawStart(e.touches[0]);
+    }, { passive: false } );
 
-function closeNav() {
-    document.getElementById("rightSidenav").style.width = "0";
+    canvas.onmousemove = drawMove;
+    canvas.addEventListener("touchmove", (e) => {
+        e.preventDefault();
+        if (e.touches.size > 1) {
+            drawEnd();
+            return;
+        }
+        drawMove(e.touches[0]);
+    }, { passive: false } );
+
+    canvas.onmouseup = drawEnd;
+    canvas.addEventListener("touchend", (e) => {
+        e.preventDefault();
+        drawEnd();
+    }, { passive: false } );
+    
+
 }
 
 function saveImage() {
     var canvas = document.getElementById("canvas");
     var image = canvas.toDataURL("image/png");
+
+    // Create downloader element to download image file from canvas
     const downloader = document.createElement('a');
     downloader.href = image;
     downloader.download = "EditedPicture";
@@ -115,7 +161,7 @@ function saveImage() {
 }
 
 function clearCanvas() {
-    drawImageOnCanvas(localStorage.getItem("imgData"));
+    drawImageOnCanvas(localStorage.getItem(CANVAS_IMAGE_TOKEN));
 }
 
 function resizeCanvas() {
